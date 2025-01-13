@@ -20,9 +20,17 @@ Crea un archivo `.env.local` y establece `VITE_API_URL=url_base` en él para con
 
 NOTA: Despues del despliegue del front y back, para acceder desde el inicio de sesión usa estos datos de demo: `email: test.decameron@test.com, password: deca.2468@`
 
+### Hay una mejor forma de hacer el deployment y es utilizando un servicio online de despliegue como Vercel o Netlify.
+
 ## Desarrollo
 
 El proyecto esta desarrollado con React, Vite, TailwindCSS y Axios.
+
+Se usaron librerias como React Router, React Toastify, SWR para facilitar el desarrollo.
+
+### URL Principal: https://decameron.netlify.app/
+
+Login: https://decameron.netlify.app/auth/login
 
 ## Documentación
 
