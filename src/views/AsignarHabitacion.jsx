@@ -113,7 +113,7 @@ export default function AsignarHabitacion() {
         
                   <input 
                     type="submit" 
-                    value="Guardar Hotel" 
+                    value="Guardar Habitación" 
                     className="bg-blue-900 hover:bg-blue-950 transition-colors cursor-pointer uppercase font-bold w-full p-3 text-white"
                   />
         
