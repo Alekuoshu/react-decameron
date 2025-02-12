@@ -1,6 +1,6 @@
 # React Decameron
 
-Este proyecto es de prueba para practicar nuevos conocimientos, proyecto de busqueda, posteo de empleos de desarrollo.
+Este proyecto es de prueba para practicar conocimientos y postularme a un empleo de desarrollo.
 
 ## Instalación
 
