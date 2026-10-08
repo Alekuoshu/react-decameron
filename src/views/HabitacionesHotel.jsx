@@ -20,7 +20,7 @@ export default function HabitacionesHotel() {
     if(!token) {
       navigate("/auth/login");
     }
-  }, [])
+  }, [navigate, token])
   
 
   const { id } = useParams()
@@ -49,14 +49,30 @@ export default function HabitacionesHotel() {
       });
   }
   const { data, error, isLoading } = useSWR(`/api/hoteles/${id}`, fetcher, {
-    refreshInterval: 200
+    refreshInterval: 1000
   })
 
   if(isLoading) return 'Cargando...';
-  const habitaciones = data.data.habitaciones.sort((a, b) => a.tipo_habitacion.localeCompare(b.tipo_habitacion));
-  const nombre = data.data.nombre;
-  const numero_hab = data.data.numero_hab;
-  const restante = numero_hab - habitaciones.reduce((a, b) => a + b.cantidad, 0);
+  if(error) return 'No fue posible cargar las habitaciones.';
+
+  const hotel = data?.data;
+  const habitaciones = Array.isArray(hotel?.habitaciones)
+    ? [...hotel.habitaciones].sort((a, b) =>
+        String(a.tipo_habitacion ?? '').localeCompare(
+          String(b.tipo_habitacion ?? '')
+        )
+      )
+    : [];
+  const nombre = hotel?.nombre ?? '';
+  const numero_hab = Number(hotel?.numero_hab);
+  const capacidad = Number.isFinite(numero_hab) ? numero_hab : 0;
+
+  const habitacionesAsignadas = habitaciones.reduce((total, habitacion) => {
+    const cantidad = Number(habitacion?.cantidad);
+    return total + (Number.isFinite(cantidad) ? cantidad : 0);
+  }, 0);
+
+  const restante = Math.max(0, capacidad - habitacionesAsignadas);
 
 
 
@@ -75,7 +91,7 @@ export default function HabitacionesHotel() {
       <div className="w-11/12 mx-auto mb-10">
         <div className="flex justify-end gap-5">
         
-          <button type="button" className={`${restante > 0 ? 'bg-green-600 hover:bg-green-800' : 'bg-slate-400'} float-right w-auto flex items-center justify-between text-white font-bold py-2 px-4 rounded`} disabled={restante > 0 ? '' : 'disabled'} onClick={handleAgregar}>
+          <button type="button" className={`${restante > 0 ? 'bg-green-600 hover:bg-green-800' : 'bg-slate-400'} float-right w-auto flex items-center justify-between text-white font-bold py-2 px-4 rounded`} disabled={restante <= 0} onClick={handleAgregar}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#fff" className="size-8">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
@@ -92,7 +108,7 @@ export default function HabitacionesHotel() {
         </div>
 
         <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-center mt-3">Habitaciones: {nombre}</h2>
-        <p className="text-sm sm:text-lg text-center font-bold mb-8">Capacidad: {numero_hab} / Restantes: {restante}</p>
+        <p className="text-sm sm:text-lg text-center font-bold mb-8">Capacidad: {capacidad} / Restantes: {restante}</p>
 
           <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 
